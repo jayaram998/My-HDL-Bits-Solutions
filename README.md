@@ -1,4 +1,4 @@
-# Hello everyone I'm Jayaram,
+# Hello Everyone I'm Jayaram,
 This notes is for learning purpose, Here i will provide my solution of https://hdlbits.01xz.net/wiki/Problem_sets questions. If you have any other method to solve these prolem feel free to use, here I'm providing what i know.
 
 Let's start
