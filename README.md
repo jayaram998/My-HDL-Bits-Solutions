@@ -197,3 +197,266 @@ OutPut
 
 # Vector0
 
+Vectors are used to group related signals using one name to make it more convenient to manipulate. For example, wire [7:0] w; declares an 8-bit vector named w that is functionally equivalent to having 8 separate wires.
+
+Notice that the declaration of a vector places the dimensions before the name of the vector, which is unusual compared to C syntax. However, the part select has the dimensions after the vector name as you would expect.
+
+
+wire [99:0] my_vector;      // Declare a 100-element vector
+
+assign out = my_vector[10]; // Part-select one bit out of the vector
+
+![image](https://github.com/user-attachments/assets/0e2b89f4-6546-4f66-b10b-ed186ba4e9f6)
+
+Code
+
+module top_module ( 
+    input wire [2:0] vec,
+    output wire [2:0] outv,
+    output wire o2,
+    output wire o1,
+    output wire o0  ); // Module body starts after module declaration
+    
+    assign outv = vec;
+    
+    assign   o0 = vec[0];
+    
+    assign   o1 = vec[1];
+    
+    assign   o2 = vec[2];
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/3ba66dce-4d2e-4cb9-b42a-5e444d85edd2)
+
+# Vector in more Details
+
+Vectors are used to group related signals using one name to make it more convenient to manipulate. For example, wire [7:0] w; declares an 8-bit vector named w that is equivalent to having 8 separate wires.
+
+Vectors must be declared:
+
+type [upper:lower] vector_name;
+
+type specifies the datatype of the vector. This is usually wire or reg. If you are declaring a input or output port, the type can additionally include the port type (e.g., input or output) as well. Some examples:
+
+wire [7:0] w;         // 8-bit wire
+
+reg  [4:1] x;         // 4-bit reg
+
+output reg [0:0] y;   // 1-bit reg that is also an output port (this is still a vector)
+
+input wire [3:-2] z;  // 6-bit wire input (negative ranges are allowed)
+
+output [3:0] a;       // 4-bit output wire. Type is 'wire' unless specified otherwise.
+
+wire [0:7] b;         // 8-bit wire where b[0] is the most-significant bit.
+
+Code
+
+`default_nettype none     // Disable implicit nets. Reduces some types of bugs.
+
+module top_module( 
+    input wire [15:0] in,
+    output wire [7:0] out_hi,
+    output wire [7:0] out_lo );
+    
+    assign out_hi = in[15:8];
+    
+    assign out_lo = in[7:0];
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/aedefb3d-fbb6-44c2-af9d-c097a713a684)
+
+# Vector Port Select
+
+A 32-bit vector can be viewed as containing 4 bytes (bits [31:24], [23:16], etc.). Build a circuit that will reverse the byte ordering of the 4-byte word.
+
+AaaaaaaaBbbbbbbbCcccccccDddddddd => DdddddddCcccccccBbbbbbbbAaaaaaaa
+
+Code:
+
+module top_module( 
+    input [31:0] in,
+    output [31:0] out );
+
+    // assign out[31:24] = ...;
+    
+  //byte reversing
+  
+//This operation is often used when the endianness of a piece of data needs to be swapped, 
+
+//for example between little-endian x86 systems and the big-endian formats used in many Internet protocols.
+    
+    assign out[7:0] = in[31:24];
+    
+    assign out[15:8] = in[23:16];
+    
+    assign out[23:16] = in[15:8];
+    
+    assign out[31:24] = in[7:0];
+    
+endmodule
+
+![image](https://github.com/user-attachments/assets/994aee8e-eddb-49da-bb37-ebacc15e0bb7)
+
+# Bitwise vs. Logical Operators
+
+Build a circuit that has two 3-bit inputs that computes the bitwise-OR of the two vectors, the logical-OR of the two vectors, and the inverse (NOT) of both vectors. Place the inverse of b in the upper half of out_not (i.e., bits [5:3]), and the inverse of a in the lower half.
+
+![image](https://github.com/user-attachments/assets/9b5290c3-01ae-4385-bac4-3aaca8ad2b61)
+
+Code:
+
+module top_module( 
+    input [2:0] a,
+    input [2:0] b,
+    output [2:0] out_or_bitwise,
+    output out_or_logical,
+    output [5:0] out_not
+);
+    
+     assign out_or_bitwise = a|b;
+     
+    assign out_or_logical = a||b;
+    
+    assign out_not[5:3]   = ~b; //this is bitwise not
+    
+    assign out_not[2:0]   = ~a;
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/e24b9ddd-b8ab-4db9-9710-5580475a525c)
+
+# Four input Gate
+
+Build a combinational circuit with four inputs, in[3:0].
+
+There are 3 outputs:
+
+out_and: output of a 4-input AND gate.
+
+out_or: output of a 4-input OR gate.
+
+out_xor: output of a 4-input XOR gate.
+
+Code:
+
+module top_module( 
+    input [3:0] in,
+    output out_and,
+    output out_or,
+    output out_xor
+);
+    
+    assign out_and = in[3] && in[2] && in[1] && in[0];
+    
+    assign out_or = in[3] || in[2] || in[1] || in[0];
+    
+    assign out_xor = in[3] ^ in[2] ^ in[1] ^ in[0];
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/230296f0-bb95-48c2-b98f-1ddad614dee1)
+
+# Vector connection Operator
+
+The concatenation operator can be used on both the left and right sides of assignments.
+
+input [15:0] in;
+
+output [23:0] out;
+
+assign {out[7:0], out[15:8]} = in;         // Swap two bytes. Right side and left side are both 16-bit vectors.
+
+assign out[15:0] = {in[7:0], in[15:8]};    // This is the same thing.
+
+assign out = {in[7:0], in[15:8]};       // This is different. The 16-bit vector on the right is extended to
+
+                                        // match the 24-bit vector on the left, so out[23:16] are zero.
+                                        
+                                        // In the first two examples, out[23:16] are not assigned.
+
+Code:
+module top_module (
+    input [4:0] a, b, c, d, e, f,
+    output [7:0] w, x, y, z );//
+    
+	//Concatenation needs to know the width of every component (or how would you know the length of the result?).
+ 
+    //Thus, {1, 2, 3} is illegal and results in the error message: unsized constants are not allowed in concatenations.
+    
+	//The concatenation operator can be used on both the left and right sides of assignments.
+    
+    wire [31:0] concat_reg; //raise an error when work with reg. Reason unknown???
+    
+    assign concat_reg = {a[4:0], b[4:0], c[4:0], d[4:0], e[4:0], f[4:0], 2'b11};
+    
+    assign w = concat_reg[31:24];
+    
+    assign x = concat_reg[23:16];
+    
+    assign y = concat_reg[15:8];
+    
+    assign z = concat_reg[7:0];
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/659105f8-3620-4e22-8dad-7e83f8023aaf)
+
+# Vector Reversal
+
+Given an 8-bit input vector [7:0], reverse its bit ordering.
+
+Code:
+
+module top_module( 
+    input [7:0] in,
+    output [7:0] out
+);
+    
+    assign out = {in[0],in[1],in[2],in[3],in[4],in[5],in[6],in[7]};
+
+endmodule
+
+
+![image](https://github.com/user-attachments/assets/6304523f-4b2d-49ff-87ea-7d77c6e778de)
+
+# Replication Operator
+
+The concatenation operator allowed concatenating together vectors to form a larger vector. But sometimes you want the same thing concatenated together many times, and it is still tedious to do something like assign a = {b,b,b,b,b,b};. The replication operator allows repeating a vector and concatenating them together:
+
+Code:
+
+module top_module (
+    input [7:0] in,
+    output [31:0] out );
+    
+	// The replication operator allows repeating a vector and concatenating them together:
+ 
+	//{num{vector}}
+    
+    //this is sign-extending a smaller number to a larger one
+    
+    assign out = { {24{in[7]}} , in[7:0] };
+
+endmodule
+
+# More Replication
+
+
+![image](https://github.com/user-attachments/assets/a1835a63-944d-4096-9a75-1a34833267d7)
+
+
+module top_module (
+    input a, b, c, d, e,
+    output [24:0] out );//
+
+    // The output is XNOR of two vectors created by 
+    // concatenating and replicating the five inputs.
+    // assign out = ~{ ... } ^ { ... };
+    assign out = ~{ {5{a}},{5{b}},{5{c}},{5{d}},{5{e}}} ^ { {5{a,b,c,d,e}}};
+
+endmodule
+
+
