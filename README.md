@@ -1,5 +1,5 @@
 # Hello everyone I'm Jayaram,
-This notes is for learning purpose, Here i will provide my solution of https://hdlbits.01xz.net/wiki/Problem_sets questions. If you have and other method to solve these prolem feel free to use, here I'm providing what i know.
+This notes is for learning purpose, Here i will provide my solution of https://hdlbits.01xz.net/wiki/Problem_sets questions. If you have any other method to solve these prolem feel free to use, here I'm providing what i know.
 
 Let's start
 Build a circuit with no inputs and one output that outputs a constant 0.
