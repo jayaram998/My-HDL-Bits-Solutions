@@ -104,3 +104,96 @@ endmodule
 
 ![image](https://github.com/user-attachments/assets/348e7d43-ec6c-482b-a031-f8c822be6cc1)
 
+# Xnor Gate
+
+Create a module that implements an XNOR gate.
+
+![image](https://github.com/user-attachments/assets/cdc99b8e-a23c-4908-9594-22433d120d09)
+
+Solution
+
+ module top_module( 
+    input a, 
+    input b, 
+    output out );
+    
+    assign out = ~(a^b);
+    
+    // Also you can use
+    
+   // assign out = (~a && ~b) || (a&&b);
+
+endmodule
+
+Output
+
+![image](https://github.com/user-attachments/assets/5437de1b-2251-4faf-aa50-175eece0ca2a)
+
+# Declaring wires
+
+The circuits so far have been simple enough that the outputs are simple functions of the inputs. As circuits become more complex, you will need wires to connect internal components together. When you need to use a wire, you should declare it in the body of the module, somewhere before it is first used. (In the future, you will encounter more types of signals and variables that are also declared the same way, but for now, we'll start with a signal of type wire).
+
+![image](https://github.com/user-attachments/assets/601162ab-61f8-427b-928f-638201716b9b)
+
+Implement the following circuit. Create two intermediate wires (named anything you want) to connect the AND and OR gates together. Note that the wire that feeds the NOT gate is really wire out, so you do not necessarily need to declare a third wire here. Notice how wires are driven by exactly one source (output of a gate), but can feed multiple inputs.
+
+![image](https://github.com/user-attachments/assets/55629d95-2cf2-4dd3-bba1-0e7910e0cc42)
+
+`default_nettype none
+module top_module(
+    input a,
+    input b,
+    input c,
+    input d,
+    output out,
+    output out_n   ); 
+    
+    wire and1, and2;
+    
+    assign and1 = a&&b;
+    
+    assign and2 = c&&d;
+    
+    assign out = and1 || and2;
+    
+    assign out_n = ~out;
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/2f4dddb8-7a2d-438b-a61e-e4492453edfa)
+
+# 7458 Chip
+
+Create a module with the same functionality as the 7458 chip. It has 10 inputs and 2 outputs. You may choose to use an assign statement to drive each of the output wires, or you may choose to declare (four) wires for use as intermediate signals, where each internal wire is driven by the output of one of the AND gates. For extra practice, try it both ways.
+
+![image](https://github.com/user-attachments/assets/70e6bae2-c4ba-4440-a41c-371d5c45bf3a)
+
+module top_module ( 
+    input p1a, p1b, p1c, p1d, p1e, p1f,
+    output p1y,
+    input p2a, p2b, p2c, p2d,
+    output p2y );
+    
+    wire and1, and2, and3, and4;
+    
+    assign and1 = p2a && p2b;
+    
+    assign and2 = p2c && p2d;
+    
+    assign and3 = p1a && p1b && p1c;
+    
+    assign and4 = p1e && p1f && p1d;
+    
+    assign p2y = and1 || and2;
+    
+    assign p1y = and3 || and4;
+
+
+endmodule
+
+OutPut
+
+![image](https://github.com/user-attachments/assets/2a667e8e-1560-43d8-ac59-e7baed3e548c)
+
+# Vector0
+
