@@ -459,4 +459,138 @@ module top_module (
 
 endmodule
 
+# Connection port by position
+
+This problem is similar to the previous one (module). You are given a module named mod_a that has 2 outputs and 4 inputs, in that order. You must connect the 6 ports by position to your top-level module's ports out1, out2, a, b, c, and d, in that order.
+
+![image](https://github.com/user-attachments/assets/fc62831e-41a7-4d84-b848-337aea392e13)
+
+Code:
+
+module top_module ( 
+    input a, 
+    input b, 
+    input c,
+    input d,
+    output out1,
+    output out2
+);
+    
+    //connect module by position
+    
+    mod_a inst_1(out1,out2,a,b,c,d);
+
+endmodule
+
+![image](https://github.com/user-attachments/assets/ccbd5155-4858-4e54-95b1-3cfdc3efb995)
+
+# Connecting ports by name
+
+This problem is similar to module. You are given a module named mod_a that has 2 outputs and 4 inputs, in some order. You must connect the 6 ports by name to your top-level module's ports:
+
+![image](https://github.com/user-attachments/assets/7a6e2d66-226a-42be-a47a-41d5a3788c2c)
+
+Code:
+module top_module ( 
+    input a, 
+    input b, 
+    input c,
+    input d,
+    output out1,
+    output out2
+);
+    
+        //connect ports by name
+    mod_a inst_1(.in1(a), .in2(b), .in3(c), .in4(d), .out1(out1), .out2(out2));
+
+endmodule
+
+Same output as above
+
+# Three Modules
+
+You are given a module my_dff with two inputs and one output (that implements a D flip-flop). Instantiate three of them, then chain them together to make a shift register of length 3. The clk port needs to be connected to all instances.
+
+![image](https://github.com/user-attachments/assets/481d24ec-37a4-44b9-ad54-36658e568026)
+
+Code:
+
+module top_module ( input clk, input d, output q );
+
+    wire con1, con2;
+    
+    my_dff d_flop1(.clk(clk),.d(d),.q(con1));
+    
+    my_dff d_flop2(.clk(clk),.d(con1),.q(con2));
+    
+    my_dff d_flop3(.clk(clk),.d(con2),.q(q));
+
+endmodule
+
+Output:
+
+![image](https://github.com/user-attachments/assets/93d832c2-0c48-4716-bc4e-7d0a36604ca9)
+
+
+# Modules and vector
+
+This exercise is an extension of module_shift. Instead of module ports being only single pins, we now have modules with vectors as ports, to which you will attach wire vectors instead of plain wires. Like everywhere else in Verilog, the vector length of the port does not have to match the wire connecting to it, but this will cause zero-padding or trucation of the vector. This exercise does not use connections with mismatched vector lengths.
+
+![image](https://github.com/user-attachments/assets/d63021c8-5759-45eb-916f-d8a268fa40f2)
+
+Code:
+
+module top_module ( 
+    input clk, 
+    input [7:0] d, 
+    input [1:0] sel, 
+    output reg [7:0] q 
+);
+
+    wire [7:0]con1,con2,con3;
+    
+    my_dff8 d_flop1(.clk(clk), .d(d), .q(con1));
+    
+    my_dff8 d_flop2(.clk(clk), .d(con1), .q(con2) );
+    
+    my_dff8 d_flop3(.clk(clk), .d(con2), .q(con3));
+    
+    always @ (*) begin
+    
+        case(sel)
+	
+            0 : q = d ;
+	    
+            1 : q = con1;
+	    
+            2 : q = con2;
+	    
+            3 : q = con3;
+	    
+        endcase
+        
+        /*if(sel==2'b00)
+	
+            q=d;
+	    
+        else if( sel == 2'b01)
+	
+      		q = con1;
+	
+        else if( sel == 2'b10)
+	
+      		q = con2;
+	
+        else if( sel == 2'b11)
+	
+      		q = con3;
+	
+ 		*/
+ 	end
+    
+endmodule
+
+![image](https://github.com/user-attachments/assets/0a8c93a2-abd9-4207-8cf7-d1173595bcd4)
+
+
 
